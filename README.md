@@ -1,9 +1,5 @@
 <h1 align="center">💫 PoroPilot 💫</h1>
 
-<p align="center">
-  <img src="https://www.clipartmax.com/png/small/283-2835866_cal-poly-slo-league-of-legends-club-cute-poro.png" alt="Cal Poly Slo League Of Legends Club - Cute Poro">
-</p>
-
 🚀 **Features**
 
 PoroPilot is a Python library designed to simplify interactions with the Riot Games API.
