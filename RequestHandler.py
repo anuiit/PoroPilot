@@ -9,6 +9,8 @@ MAX_RETRIES = 3
 CACHE_NAME = 'riot_api_cache'
 EXPIRE_AFTER = 3600
 ERROR_TIME_SLEEP = 3
+logging.basicConfig(level=logging.INFO)
+
 REGION_TO_PLATFORM = {
     'eun1': 'europe',
     'euw1': 'europe',
@@ -23,17 +25,21 @@ REGION_TO_PLATFORM = {
     'oc1': 'americas'
 }
 
+
 class RequestHandler:
-    def __init__(self, api_key, region, use_platform, max_retries=MAX_RETRIES ,use_cache=True):
+    def __init__(self, api_key, region, use_platform, expire_after=3600, max_retries=3):
         self.api_key = api_key
         self.region = region
         self.use_platform = use_platform
+        self.expire_after = expire_after
         self.max_retries = max_retries
         self.session = requests.Session()
-        self.set_cache()
+        self.set_cache(expire_after)
+
+        self.retries = 0
     
-    def set_cache(self, cache_name=CACHE_NAME):
-        requests_cache.install_cache(cache_name)
+    def set_cache(self, expire_after, cache_name='riot_api_cache'):
+        requests_cache.install_cache(cache_name, expire_after=expire_after)
 
     def build(self, region, endpoint, query_params=None):
         domain = REGION_TO_PLATFORM[region] if self.use_platform else region
@@ -53,43 +59,20 @@ class RequestHandler:
 
                 return response.json()
             except requests.exceptions.RequestException as e:
+                RequestHandler.handle_error(e)
                 self.retries += 1
-                self.handle_error(e)
-                logging.info(f"Retrying : {self.retries}/{self.max_retries}")
-                #logging.info(f"Url : {e.request.url}")
-        
-        logging.info("Max retries reached.")
-        return None
+                logging.info(f"Retrying request {self.retries}/{self.max_retries}")
 
-    def sleep_interruptable(self, seconds):
-        try:
-            time.sleep(seconds)
-        except KeyboardInterrupt:
-            logging.info("Interrupted by user.")
-            raise KeyboardInterrupt
-
-    def handle_error(self, exception):
+    def handle_error(exception):
         if isinstance(exception, requests.exceptions.ConnectionError):
-            logging.info(f"Unable to connect to the server: {exception.response.status_code}")
-
+            logging.info("Unable to connect to the server:", str(exception))
         elif isinstance(exception, requests.exceptions.HTTPError):
-            logging.info(f"HTTP error occurred: {exception.response.status_code}")
+            logging.info("HTTP error occurred:", str(exception))
 
             if exception.response.status_code == 429:
                 retry_after = exception.response.headers['Retry-After']
                 logging.info(f"Waiting {retry_after} seconds before retrying...")
-                self.sleep_interruptable(int(retry_after))
-            elif exception.response.status_code == 403:
-                logging.info("Forbidden. Check your API key.")
-                self.sleep_interruptable(ERROR_TIME_SLEEP)
-            elif exception.response.status_code == 404:
-                logging.info("Not found.")
-                self.sleep_interruptable(ERROR_TIME_SLEEP)
-            elif exception.response.status_code == 500:
-                logging.info("Internal server error.")
-                self.sleep_interruptable(ERROR_TIME_SLEEP)
-            elif exception.response.status_code == 503:
-                logging.info("Service unavailable.")
-                self.sleep_interruptable(ERROR_TIME_SLEEP)
+                
+                time.sleep(int(retry_after))
         else:
-            logging.info(f"An unexpected error occurred: {exception.response.status_code}")
+            logging.info("An unexpected error occurred:", str(exception))

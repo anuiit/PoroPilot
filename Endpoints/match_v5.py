@@ -27,17 +27,11 @@ class MatchApi:
         start: int = 0,
         count: int = 20,
     ):
-
-        query_params = {k: v for k, v in locals().items() if v is not None and k != 'self'}
+        query_params = {k: v for k, v in locals().items() if v is not None and k != 'self' and k != 'puuid'}
 
         if startTime:
-            start_time = datetime.strptime(str(startTime), '%Y-%m-%d')
-            start_time_seconds = int(start_time.timestamp())
-            query_params['startTime'] = start_time_seconds
-
+            query_params['startTime'] = int((datetime.now() - datetime.fromisoformat(query_params['startTime'])).total_seconds())
         if endTime:
-            end_time = datetime.strptime(str(endTime), '%Y-%m-%d')
-            end_time_seconds = int(end_time.timestamp())
-            query_params['endTime'] = end_time_seconds
+            query_params['endTime'] = int((datetime.now() - datetime.fromisoformat(query_params['startTime'])).total_seconds())
 
         return self.request_handler.make_request(self.ENDPOINTS['BY_PUUID_MATCHLIST'].format(puuid), query_params=query_params)
