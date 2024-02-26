@@ -1,7 +1,4 @@
 <h1 align="center">💫 PoroPilot 💫</h1>
-<p align="center">
-  <em>Riot API made easy</em>
-</p>
 
 🚀 **Features**
 
