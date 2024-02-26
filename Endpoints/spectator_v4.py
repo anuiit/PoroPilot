@@ -1,5 +1,4 @@
 from ..RequestHandler import RequestHandler
-from datetime import datetime
 
 class SpectatorApi:
     ENDPOINTS = {
@@ -7,8 +6,8 @@ class SpectatorApi:
         'BY_FEATURED_GAMES': '/lol/spectator/v4/featured-games'
     }
 
-    def __init__(self, region, api_key, use_cache=True):
-        self.request_handler = RequestHandler(api_key, region, False, use_cache=use_cache)
+    def __init__(self, region, api_key):
+        self.request_handler = RequestHandler(api_key, region, False)
 
     def by_summoner(self, summoner_id):
         return self.request_handler.make_request(self.ENDPOINTS['BY_SUMMONER'].format(summoner_id))

@@ -1,5 +1,4 @@
 from ..RequestHandler import RequestHandler
-from datetime import datetime
 
 class AccountApi:
     ENDPOINTS = {
@@ -8,8 +7,8 @@ class AccountApi:
         'ACTIVE_SHARD': '/riot/account/v1/active-shards//by-game/{game}/by-puuid/{PUUID}'
     }   
 
-    def __init__(self, region, api_key, use_cache=True):
-        self.request_handler = RequestHandler(api_key, region, True, use_cache=use_cache)
+    def __init__(self, region, api_key):
+        self.request_handler = RequestHandler(api_key, region, True)
 
     def by_puuid(self, puuid):
         return self.request_handler.make_request(self.ENDPOINTS['BY_PUUID'].format(puuid))

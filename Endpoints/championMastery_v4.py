@@ -1,5 +1,4 @@
 from ..RequestHandler import RequestHandler
-from datetime import datetime
 
 class ChampionMasteryApi:
     ENDPOINTS = {
@@ -11,8 +10,8 @@ class ChampionMasteryApi:
         'BY_SUMMONER_TOTAL_SCORE': '/lol/champion-mastery/v4/scores/by-summoner/{}'
     }
 
-    def __init__(self, region, api_key, use_cache=True):
-        self.request_handler = RequestHandler(api_key, region, False, use_cache=use_cache)
+    def __init__(self, region, api_key):
+        self.request_handler = RequestHandler(api_key, region, False)
 
     def by_puuid(self, puuid):
         return self.request_handler.make_request(self.ENDPOINTS['BY_PUUID'].format(puuid))

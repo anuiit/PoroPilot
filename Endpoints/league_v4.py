@@ -1,5 +1,4 @@
 from ..RequestHandler import RequestHandler
-from datetime import datetime
 
 class LeagueApi:
     ENDPOINTS = {
@@ -11,8 +10,8 @@ class LeagueApi:
         'BY_MASTER_QUEUE': '/lol/league/v4/masterleagues/by-queue/{}'
     }
 
-    def __init__(self, region, api_key, use_cache=True):
-        self.request_handler = RequestHandler(api_key, region, False, use_cache=use_cache)
+    def __init__(self, region, api_key):
+        self.request_handler = RequestHandler(api_key, region, False)
 
     def chall_queue(self, queue): # queue = RANKED_SOLO_5x5, RANKED_FLEX_SR, RANKED_FLEX_TT
         return self.request_handler.make_request(self.ENDPOINTS['BY_CHALL_QUEUE'].format(queue))
