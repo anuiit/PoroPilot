@@ -5,31 +5,49 @@
 
 🚀 **Features**
 
-PoroPilot is a Python library designed to simplify interactions with the Riot Games API. With a suite of classes tailored for ease of use, here’s what PoroPilot offers:
+PoroPilot is a Python library designed to simplify interactions with the Riot Games API.
 
-- **PoroPilot**: Your primary interface to the Riot API, handling initialization of essential details like the API key, region, and debug mode.
+- **PoroPilot**: Your primary interface to the Riot API, handling initialization of essential details like the API key and region.
 
-- **RequestHandler**: Manages the creation of requests to the Riot Games API, utilizing `UrlBuilder`for URL construction.
+- **RequestHandler**: Manages the creation of requests, utilizing `UrlBuilder` for URL setup and manages 429 (rate limit) errors.
 
-- **MatchApi** and **SummonerApi**: Facilitate querying of match and summoner information, respectively.
+- **Endpoints**: Each primary endpoint houses a variety of sub-endpoints, see more here [RiotAPI](https://developer.riotgames.com/apis).
 
 <br>
 
 🛠️ Usage
 
-Initially, you can start with `main.py`, but this approach will be phased out in future versions.
-
 Here's a quick start guide to get you up and running:
 
-      from poropilot import PoroPilot
-      
-      # Initialize PoroPilot with your API key and region
-      euw1_pp = PoroPilot(api_key="your_api_key", region="euw1")
-      
-      # Fetch match details by its ID
-      match_info = euw1_pp.match.by_match_id(match_id="your_match_id")
-      
-      # Fetch player details by summoner name
-      summoner_info = euw1_pp.summoner.by_name(summoner_name="your_summoner_name")
+Install PoroPilot using pip:
+    
+        pip install PoroPilot
+
+To start interacting with the Riot API, initialize the `PoroPilot` class with your API key and the desired region. Here's a simple example to get summoner and match information:
+
+        from PoroPilot import PoroPilot
+        
+        poro_kr = PoroPilot("RGAPI-XXXXX", "kr")
+        poro_euw = PoroPilot("RGAPI-XXXXX", "euw1")
+        
+        print(poro_kr.summoner.by_name("hideonbush"))
+        print(poro_kr.match.by_match_id("KR_6965060843"))
+        
+        print(poro_euw.summoner.by_name("zyb"))
+        print(poro_euw.match.by_match_id("EUW1_6830353289"))
+
+PoroPilot maps directly to Riot API's endpoints with function names that mirror the official ones.
 
 <br>
+
+🚀 **Future Improvements**
+
+A range of improvements are planned, including:
+
+- [ ] **Automatic Region Search**
+
+- [ ] **Refactor Endpoints into a Main API Class**
+
+- [ ] **Expanded API Coverage**
+
+- [ ] **In Depth Examples**
