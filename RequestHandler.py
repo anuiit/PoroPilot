@@ -9,7 +9,6 @@ MAX_RETRIES = 3
 CACHE_NAME = 'riot_api_cache'
 EXPIRE_AFTER = 3600
 ERROR_TIME_SLEEP = 3
-logging.basicConfig(level=logging.INFO)
 
 REGION_TO_PLATFORM = {
     'eun1': 'europe',
@@ -27,22 +26,22 @@ REGION_TO_PLATFORM = {
 
 
 class RequestHandler:
-    def __init__(self, api_key, region, use_platform, expire_after=3600, max_retries=3):
+    def __init__(self, api_key, region, use_platform, expire_after=EXPIRE_AFTER, max_retries=MAX_RETRIES):
         self.api_key = api_key
         self.region = region
         self.use_platform = use_platform
+
         self.expire_after = expire_after
         self.max_retries = max_retries
+        self.retries = 0
         self.session = requests.Session()
         self.set_cache(expire_after)
-
-        self.retries = 0
     
-    def set_cache(self, expire_after, cache_name='riot_api_cache'):
-        requests_cache.install_cache(cache_name, expire_after=expire_after)
+    def set_cache(self):
+        requests_cache.install_cache(CACHE_NAME, expire_after=self.expire_after)
 
-    def build(self, region, endpoint, query_params=None):
-        domain = REGION_TO_PLATFORM[region] if self.use_platform else region
+    def build(self, endpoint, query_params=None):
+        domain = REGION_TO_PLATFORM[self.region] if self.use_platform else self.region
         base_url = f"https://{domain}.api.riotgames.com{endpoint}"
         
         return base_url if not query_params else f'{base_url}?{urlencode(query_params)}'
@@ -66,6 +65,7 @@ class RequestHandler:
     def handle_error(exception):
         if isinstance(exception, requests.exceptions.ConnectionError):
             logging.info("Unable to connect to the server:", str(exception))
+        
         elif isinstance(exception, requests.exceptions.HTTPError):
             logging.info("HTTP error occurred:", str(exception))
 
