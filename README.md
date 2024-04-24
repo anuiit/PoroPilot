@@ -14,6 +14,8 @@ PoroPilot is a Python library designed to simplify interactions with the Riot Ga
 
 🛠️ Usage
 
+*For a more detailed documentation : [Here](https://anuiit.github.io/poropilot-docs/)*
+
 Here's a quick start guide to get you up and running:
 
 Install PoroPilot using pip:
@@ -48,5 +50,3 @@ A range of improvements are planned, including:
 - [ ] **Expanded API Coverage**
 
 - [ ] **In Depth Examples**
-
-For a more detailed documentation : [Here](https://anuiit.github.io/poropilot-docs/)
