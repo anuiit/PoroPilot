@@ -2,8 +2,8 @@ from ..RequestHandler import RequestHandler
 
 class SpectatorApi:
     ENDPOINTS = {
-        'BY_SUMMONER': '/lol/spectator/v4/active-games/by-summoner/{}',
-        'BY_FEATURED_GAMES': '/lol/spectator/v4/featured-games'
+        'BY_SUMMONER': '/lol/spectator/v/active-games/by-summoner/{}',
+        'BY_FEATURED_GAMES': '/lol/spectator/v5/featured-games'
     }
 
     def __init__(self, region, api_key):
